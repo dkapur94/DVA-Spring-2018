@@ -1,0 +1,83 @@
+
+****************************************
+Part A
+
+Linear Regression - 
+	Training Accuracy:0.8607
+	Testing Accuracy: 0.8239
+
+SVM -
+	Training Accuracy: 1
+	Testing Accuracy: 0.8024
+
+MLP - 
+	Training Accuracy:0.955
+	Testing Accuracy: 0.786
+
+Random Forest - 
+	Training Accuracy: 0.998
+	Testing Accuracy: 0.953
+
+****************************************
+Part B - Hyper-parameter tuning
+
+Random Forest - 
+	n_estimators: 
+		What it does (at most 25 words):Gives the number of trees in the Forest.
+		Values tested (at least 3): [10,20,30]
+
+	max_depth: 
+		What it does:Gives the maximum depth of the tree.
+		Values tested (at least 3): [5,10,15]
+		
+	Best combination of parameter values:
+		n_estimators: 30
+		max_depth: 15
+
+	Testing Accuracy before tuning (default parameters):0.953
+	Testing Accuracy after tuning:0.964
+
+
+SVM -
+	Kernels: 
+		What it does: Kernels enables the SVM to operate in a high-dimensional, feature space without ever computing the transformation of the data in that space.
+		Values tested: rbf, linear
+	C: 
+		What it does: C is a regularization parameter that controls the trade-off between maximizing the margin and minimizing the training error. 
+		Values tested (at least 3): [0.1,1,10]
+		
+	Best combination of parameter values: 
+		Kernel:rbf 
+		C: 10
+	
+	Testing Accuracy before tuning  (default parameters):0.8024
+	Testing Accuracy after tuning:0.854
+
+
+****************************************
+Part C
+
+For your SVM's CV run from part B, state the highest mean testing accuracy 
+across the sets of parameter values and its corresponding mean train score and mean fit time. 
+
+SVM's highest mean testing/cross-validated accuracy: 86%
+SVM's mean train score: 86%
+SVM's mean fit time: 0.751
+
+****************************************
+Part D
+
+Tuned SVM's testing accuracy BEFORE preprocessing: 80.24%
+Tuned SVM's testing accuracy AFTER preprocessing: 96.929%
+Why you think it increased, decreased, or stayed the same:Preprocessing of the training data improved the accuracy for SVM. Preprocessing of the training data can reduce the skewness of the data as well as the prominence of outliers in it.
+
+****************************************
+Part E
+
+Best Classifier:Random Forest
+Why: Random Forest has a testing accuracy of 95%. Random Forest classifier is the most accurate as it prevents overfitting and therefore improves accuracy. Bootstrapping reduces bias and variance both which makes the model more robust and accurate.
+
+
+
+
+
