@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <title>D3 dkapur7</title>
+        <script src="../lib/d3.v3.min.js"></script>
+        <style type = "text/css">
+        
+        .axis path,
+            .axis line {
+                fill: none;
+                stroke: black;
+                shape-rendering: crispEdges;
+            }
+            
+            .axis text {
+                font-family: sans-serif;
+                font-size: 11px;}
+        .line1 {
+                shape-rendering:crispEdges;
+                stroke:black;
+                fill:none;
+
+                    } 
+            
+    </style>
+    </head>
+    <body>
+        <script type="text/javascript">
+               var w = 800;
+               var h = 600;
+               var padding = 50;
+               var dataset = [{franchise:'Harry Potter', revenue: {1:974, 2:878, 3:796, 4:896, 5:942, 6:935, 7:960, 8:1341 }},
+                              {franchise:'Transformers', revenue: {1:708, 2:836, 3:1123, 4:1104, 5:603 }},
+                              {franchise:'Mission Impossible', revenue: {1:457, 2:549, 3:397, 4:694, 5:700 }},
+                              {franchise:'Fast and the Furious', revenue: {1:206, 2:236, 3:363, 4:363, 5:629, 6:789, 7:1516, 8:1237 }},
+                              {franchise:'Hunger Games', revenue: {1:677, 2:864, 3:766, 4:650 }},
+                              {franchise:'Pirates of the Caribbean', revenue: {1:634, 2:1066, 3:963, 4:1045, 5:794 }} ];
+
+                    var dataset2  = [{franchise:'Harry Potter', revenue: {1:974, 2:878, 3:796, 4:896, 5:942, 6:935, 7:960, 8:1341 }},
+                                      {franchise:'Transformers', revenue: {1:708, 2:836, 3:1123, 4:1104, 5:603 }},
+                                      {franchise:'Mission Impossible', revenue: {1:457, 2:549, 3:397, 4:694, 5:700 }},
+                                      {franchise:'Fast and the Furious', revenue: {1:206, 2:236, 3:363, 4:363, 5:629, 6:789, 7:1516, 8:1237 }},
+                                      {franchise:'Hunger Games', revenue: {1:677, 2:864, 3:766, 4:650 }},
+                                      {franchise:'Pirates of the Caribbean', revenue: {1:634, 2:1066, 3:963, 4:1045, 5:794 }} ] ;
+
+
+                  
+                  dataset.forEach(function(d){
+                  d.totalrevenue = d3.sum(d3.values(d.revenue));
+                   
+                       });
+        
+                var svg = d3.select("body")
+                             .append("svg")
+                             .attr("width", w)   
+                             .attr("height", h);
+
+                var svg2 = d3.select("body")
+                             .append("svg")
+                             .attr("width",400) 
+                             .attr("height",400);  
+                                      
+
+                        
+
+                var xscale = d3.scale.linear()
+                                .domain([0, d3.max(dataset,function(d)
+                                 { return d.totalrevenue})])
+                                .range([0, w]);    
+
+                var yscale = d3.scale.ordinal()
+                               .domain(dataset.map(function(d){  
+                                return d.franchise;}))
+                               .rangeBands([padding,h-padding]);  
+
+
+                var xscale1 = d3.scale.linear()
+                                    .range([padding, 300 - padding ]);    
+
+                var yscale1 = d3.scale.linear()
+                              .range([300-padding,padding]);   
+
+                              
+
+                var xaxis = d3.svg.axis()
+                              .scale(xscale1)
+                              .orient("bottom")  
+
+                                          
+                var yaxis = d3.svg.axis()
+                              .scale(yscale1)
+                              .orient("left")                          
+                
+
+
+                 svg.selectAll("path")
+                 .data(dataset)
+                 .enter()
+                 .append("rect",function(d) { return d.totalrevenue})
+                 .attr("x",3*padding)
+                 .attr("y",function(d) {return yscale(d.franchise)})
+                 .attr("height",padding)   
+                 .attr("width", function(d) { return xscale(d.totalrevenue)}) 
+                 .style("fill","blue")
+                 .on("mouseover",mouseover) 
+                 .on("mouseout",mouseout) 
+                    ;
+
+
+                     svg.append("text")
+                    .data(dataset)
+                    .style("text-anchor","start")
+                    .style("font-size","14px")
+                    .style("stroke","black")
+                    .style("font-weight","bold")
+                    .text("Harry Potter")
+                    .attr("x",0)
+                    .attr("y",(padding+32)); 
+
+                  svg.append("text")
+                    .data(dataset)
+                    .style("text-anchor","middle")
+                    .style("font-size","14px")
+                    .style("font-weight","bold")
+                    .style("stroke","black")
+                    .text("7722")
+                    .attr("x",w/2-4*padding)
+                    .attr("y",(padding+33)) ;
+
+
+                      svg.append("text")
+                    .data(dataset)
+                    .style("text-anchor","start")
+                    .style("font-size","14px")
+                    .style("stroke","black")
+                    .style("font-weight","bold")
+                    .text("Transformers")
+                    .attr("x",0)
+                    .attr("y",2*(padding+30)); 
+
+                  svg.append("text")
+                    .data(dataset)
+                    .style("text-anchor","middle")
+                    .style("font-size","14px")
+                    .style("font-weight","bold")
+                    .style("stroke","black")
+                    .text("4374")
+                    .attr("x",w/2-4*padding)
+                    .attr("y",2*(padding+32)) ;
+
+
+
+                     svg.append("text")
+                    .data(dataset)
+                    .style("text-anchor","start")
+                    .style("font-size","14px")
+                    .style("stroke","black")
+                    .style("font-weight","bold")
+                    .text("Mission Impossible")
+                    .attr("x",0)
+                    .attr("y",3*(padding+30)); 
+
+                  svg.append("text")
+                    .data(dataset)
+                    .style("text-anchor","middle")
+                    .style("font-size","14px")
+                    .style("font-weight","bold")
+                    .style("stroke","black")
+                    .text("2797")
+                    .attr("x",w/2-4*padding)
+                    .attr("y",3*(padding+32)) ;
+
+                     svg.append("text")
+                    .data(dataset)
+                    .style("text-anchor","start")
+                    .style("font-size","14px")
+                    .style("stroke","black")
+                    .style("font-weight","bold")
+                    .text("Fast & Furious")
+                    .attr("x",0)
+                    .attr("y",4*(padding+30)); 
+
+                  svg.append("text")
+                    .data(dataset)
+                    .style("text-anchor","middle")
+                    .style("font-size","14px")
+                    .style("font-weight","bold")
+                    .style("stroke","black")
+                    .text("5339")
+                    .attr("x",w/2-4*padding)
+                    .attr("y",4*(padding+32)) ;
+
+
+                    svg.append("text")
+                    .data(dataset)
+                    .style("text-anchor","start")
+                    .style("font-size","14px")
+                    .style("stroke","black")
+                    .style("font-weight","bold")
+                    .text("Hunger Games")
+                    .attr("x",0)
+                    .attr("y",5*(padding+33)); 
+
+                  svg.append("text")
+                    .data(dataset)
+                    .style("text-anchor","middle")
+                    .style("font-size","14px")
+                    .style("font-weight","bold")
+                    .style("stroke","black")
+                    .text("2957")
+                    .attr("x",w/2-4*padding)
+                    .attr("y",5*(padding+33)) ;           
+ 
+
+                 svg.append("text")
+                    .data(dataset)
+                    .style("text-anchor","start")
+                    .style("font-size","14px")
+                    .style("stroke","black")
+                    .style("font-weight","bold")
+                    .text("Pirates of the Caribbean")
+                    .attr("x",0)
+                    .attr("y",6*(padding+33)); 
+
+                  svg.append("text")
+                    .data(dataset)
+                    .style("text-anchor","middle")
+                    .style("font-size","14px")
+                    .style("font-weight","bold")
+                    .style("stroke","black")
+                    .text("4502")
+                    .attr("x",w/2-4*padding)
+                    .attr("y",6*(padding+33)) ;       
+
+                    
+                
+
+                    function mouseover(d)
+                    {
+                     d3.select(this)
+                     .style("fill","grey");
+
+                          var line = d3.svg.line()
+                           .x(function(d,i) {  //console.log(xscale1(i+1))
+                            return xscale1(i+1);} )
+                           .y(function(d,i) { console.log(yscale1(d))
+                           return yscale1(d)
+                       });  
+
+                     xscale1.domain([1, d3.values(d.revenue).length])
+                     yscale1.domain([0,d3.max(d3.values(d.revenue))])
+                     
+                         svg2.append("g")
+                         .attr("class","axis")
+                         .attr("transform", "translate(" + 0 + "," + (300 - padding)+ ")")
+                         .call(xaxis)
+                         .append("text")
+                           .style("text-anchor","middle")
+                           .text("Movie")
+                           .attr("transform" , "translate(130,30)")
+                           .style("font-size","14px"); 
+
+
+                         svg2.append("g")
+                         .attr("class", "axis")
+                         .attr("transform", "translate(" + padding + ",0)")
+                         .call(yaxis)
+                         .append("text")
+                           .style("text-anchor","middle")
+                           .text("Revenue")
+                           .attr("transform" , "translate(-40,150)rotate(270)")
+                           .style("font-size","14px")
+                           .style("font-weight",""); 
+                          
+                         console.log(d3.values(d.revenue))
+
+                         svg2.append("path")
+                         .attr("class","line1")
+                         .attr("d",line(d3.values(d.revenue)))
+                         .style("stroke","steelblue");
+                         
+                        }
+                    
+                     function mouseout(d)
+                     {
+                        d3.select(this)
+                        .style("fill","blue")
+                        svg2.selectAll("*")
+                           .remove()
+                     }
+                        
+
+
+      </script>
+                    
+    </body>
+</html>

@@ -1,0 +1,5 @@
+1. Average Node Degree: 1.099;The degree of a node is the number of edges connected to it.
+
+2. Diameter of the graph:6; Shortest distance between the two most distant nodes in a   network. 
+3. Average Path Length:4.018;Average distance between all the nodes in a network.
+4. Graph Density:0.002;Graph density is the estimate of the number of edges and nodes in a graph.

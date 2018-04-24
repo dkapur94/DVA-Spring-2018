@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <title>D3 dkapur7</title>
+        <script src="../lib/d3.v3.min.js"></script>
+        <select id="selectbox">
+            <option value = "1" > season 1 </option>
+            <option value = "2" > season 2 </option>
+            <option value = "3" > season 3 </option>
+            <option value = "4" > season 4 </option>
+            <option value = "5" > season 5 </option>
+            <option value = "6" > season 6 </option>
+            </select>
+       
+
+        <style type = "text/css">
+        
+        .axis path,
+            .axis line {
+                fill: none;
+                stroke: none;
+                shape-rendering: crispEdges;
+            }
+            
+            .axis text {
+                font-family: sans-serif;
+                font-size: 11px;
+            }
+
+            .tile{
+              shape-rendering: crispEdges;
+            }
+
+            #selectbox{
+               position:absolute;
+                top:70px;
+                left:400px;}
+
+    </style>
+    </head>
+    <body>
+        <script type="text/javascript">
+           
+               var w = 800;
+               var h = 800;
+               var padding = 100;
+              
+               var house = ["Baratheon","Greyjoy","Lannister","Stark","Targaryen","Tyrell"];
+            
+    
+               var appr = [];
+               // Data load
+               d3.csv("heatmap.csv",function(data)
+                { dataset = data
+                  
+                  
+                     dataset.map(function(d){
+                    for (var i in d)
+                    {
+                      if (i!="season" && i != "episode"){
+                        appr.push({
+                          house: i,
+                          appear: +d[i],
+                          episode: +d.episode,
+                          season: +d.season
+                        })
+                      }
+
+                    }
+                  });
+                       
+                       console.log(appr)
+                 
+
+
+                  // Scale definition
+               var xscale = d3.scale.ordinal()
+                     .domain(["1","2","3","4","5","6","7","8","9","10"])
+                     .rangeBands([padding, w]);
+
+               var yscale = d3.scale.ordinal()
+                     .domain(["Baratheon","Greyjoy","Lannister","Stark","Targaryen","Tyrell" ])
+                     .rangeBands([padding,h- padding*3.0]);
+                 //SVG Declaration
+               var svg = d3.select("body")
+                             .append("svg")
+                             .attr("width", w)   
+                             .attr("height", h);
+                var colors = ["#ffffd9","#edf8b1","#c7e9b4","#7fcdbb","#41b6c4","#1d91c0","#225ea8","#253494","#081d58"]
+                var dataset1 = [0,4,8,12,16,20,24,28,32]
+                var colorscale = d3.scale.threshold()
+                             .domain([0,4,8,12,16,20,24,28,32])
+                             .range(["#ffffd9","#edf8b1","#c7e9b4","#7fcdbb","#41b6c4","#1d91c0","#225ea8","#253494","#081d58"]);
+                lscale = d3.scale.linear().range(["#ffffcc", "#0c2c84"]);
+
+               var xaxis = d3.svg.axis()
+                                  .scale(xscale)
+                                  .orient("bottom")  
+
+
+              var yaxis = d3.svg.axis()
+                                  .scale(yscale)
+                                  .orient("left")  
+
+
+
+
+                  svg.selectAll(".tile")
+                     .data(appr)
+                     .enter().append("g").append("rect")
+                     .attr("class","tile")
+                     .attr("width",0.6*padding)
+                     .attr("height",padding*0.6)
+                     .attr("rx",10)
+                     .attr("ry",10)
+                     .attr("x",function(d){ if (d.season ==1) return xscale(d.episode)})
+                     .attr("y",function (d) {if (d.season ==1) return yscale(d.house)} )
+                     .style("fill",function(d) { if (d.season ==1) {return colorscale(d.appear)} else return "white"})  ;
+
+                     svg.append("g")
+                        .attr("class", "axis")
+                        .style("font-size","18px")
+                        .attr("transform", "translate("+0+"," + (w-3.0*padding) + ")")
+                        .call(xaxis)
+                        .append("text")
+                        .attr("x", 400)
+                        .attr("y", 55)
+                        .attr("text-anchor", "middle")
+                        .style("font-size","16px")
+                        .text("Episodes");
+
+
+                        // Add a y-axis with label.
+                      svg.append("g")
+                         .attr("class", "axis")
+                         .style("font-size","14px")
+                         .attr("transform", "translate("+padding+"," + 0 + ")")
+                         .call(yaxis)
+                         .append("text")
+                         .attr("y", -60)
+                         .attr("x", -300)
+                         .attr("text-anchor", "middle")
+                         .attr("transform", "rotate(-90)")
+                         .style("font-size","18px")
+                         .text("House");
+                       
+
+
+
+                    svg.append("text")
+                    .attr("x", (w / 2+30))             
+                    .attr("y", 40)
+                    .attr("text-anchor", "middle")  
+                    .style("font-size", "20px")
+                    .text("Game of Thrones House-wise appearence");
+
+
+                    
+
+
+
+                                  appearences = (d3.max(appr,function(d){if(d.season==1){return (+d.appear)}}))
+                                   console.log(appearences)
+                                   unit = Math.round(appearences/9)
+
+                                  lscale.domain([0,unit*9])
+
+                                  var legnum = [0,unit,2*unit,3*unit,4*unit,5*unit,6*unit,7*unit,8*unit]
+
+                                  var legend = svg.selectAll(".legend")
+                                    .data((colorscale,legnum))
+                                    .enter().append("g")
+                                    .attr("class", "legend")
+                                    .attr("transform", function(d, i) { return "translate(" + (150 + i * 40) + "," + (h-2*padding) + ")"; });
+
+                                legend.append("rect")
+                                    .attr("width", 40)
+                                    .attr("height", 20)
+                                    .attr("stroke","black")
+                                    .style("fill", function(d, i) { return lscale(d); })
+
+                                legend.append("text")
+                                    .attr("x", function(d, i) { return "translate(" + (150 + i * 40) + "," + (h-10) + ")"; })
+                                    .attr("y", 26)
+                                    .attr("dy", ".35em")
+                                    .text(function(d, i) { return legnum[i]; });
+
+                                 svg.append("text")
+                                    .attr("class", "label")
+                                    .attr("x", 300)
+                                    .attr("y", h-150)
+                                    .attr("dy", ".35em")
+                                    .text("Appearances");
+
+                    d3.select('#selectbox')
+                    .on("change", function () {
+                    var selection = document.getElementById("selectbox");
+                    var selectseason = selection.options[selection.selectedIndex].value;
+
+                  updateheatmap(selectseason);
+        
+                   });  
+
+                   function updateheatmap(selectseason)  
+                   {    
+
+                   svg.selectAll("*")
+                      .remove();
+
+
+                svg.selectAll(".tile")
+                     .data(appr)
+                     .enter().append("g").append("rect")
+                     .attr("class","tile")
+                     .attr("width",0.6*padding)
+                     .attr("height",0.6*padding)
+                     .attr("rx",10)
+                     .attr("ry",10)
+                     .attr("x",function(d){ if (d.season ==+selectseason) return xscale(d.episode)})
+                     .attr("y",function (d) {if (d.season ==+selectseason) return yscale(d.house)} )
+                     .style("fill",function(d) { if (d.season ==+selectseason) {return colorscale(d.appear)} else return "white"})  ;
+
+                     svg.append("g")
+                        .attr("class", "axis")
+                        .style("font-size","18px")
+                        .attr("transform", "translate("+(0)+"," + (w-3.0*padding) + ")")
+                        .call(xaxis)
+                        .append("text")
+                        .attr("x", 400)
+                        .attr("y", 40)
+                        .attr("text-anchor", "middle")
+                        .style("font-size","16px")
+                        .text("Episodes");
+
+
+                        // Add a y-axis with label.
+                      svg.append("g")
+                         .attr("class", "axis")
+                         .style("font-size","14px")
+                         .attr("transform", "translate("+padding+"," + 0 + ")")
+                         .call(yaxis)
+                         .append("text")
+                         .attr("y", -60)
+                         .attr("x", -300)
+                         .attr("text-anchor", "middle")
+                         .attr("transform", "rotate(-90)")
+                         .style("font-size","18px")
+                         .text("House");
+
+                         svg.append("text")
+                        .attr("x", (w / 2+30))             
+                        .attr("y", 40)
+                        .attr("text-anchor", "middle")  
+                        .style("font-size", "20px")
+                        .text("Game of Thrones House-wise appearence");
+
+                        appearences = (d3.max(appr,function(d){if(d.season==selectseason){return (+d.appear)}}))
+                                   console.log(appearences)
+                                   unit = Math.round(appearences/9)
+                                  lscale.domain([0,unit*9])
+
+                                  var legnum = [0,unit,2*unit,3*unit,4*unit,5*unit,6*unit,7*unit,8*unit]
+
+                                  var legend = svg.selectAll(".legend")
+                                    .data((colorscale,legnum))
+                                    .enter().append("g")
+                                    .attr("class", "legend")
+                                    .attr("transform", function(d, i) { return "translate(" + (150 + i * 40) + "," + (h-2*padding) + ")"; });
+
+                                legend.append("rect")
+                                    .attr("width", 40)
+                                    .attr("height", 20)
+                                    .attr("stroke","black")
+                                    .style("fill", function(d, i) { return lscale(d); })
+
+                                legend.append("text")
+                                    .attr("x", function(d, i) { return "translate(" + (150 + i * 40) + "," + (h-10) + ")"; })
+                                    .attr("y", 26)
+                                    .attr("dy", ".35em")
+                                    .text(function(d, i) { return legnum[i]; });
+
+                                 svg.append("text")
+                                    .attr("class", "label")
+                                    .attr("x", 300)
+                                    .attr("y", h-150)
+                                    .attr("dy", ".35em")
+                                    .text("Appearances");
+
+                       
+                 }                   
+                });
+              </script>
+            </body>
+            </html>

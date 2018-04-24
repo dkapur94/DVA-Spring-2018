@@ -1,0 +1,9 @@
+bigrams = LOAD 's3://cse6242-2018spring-aws-big/*' AS (bigram:chararray, year:int, occurrences:float, books:float);
+A = Filter bigrams by (occurrences>=400) and (books>=8);
+B = group A by bigram;
+C = foreach B generate $0 as bigram, SUM($1.occurrences)/SUM($1.books) as avgappr;
+D = order C by avgappr desc, bigram asc;
+E = limit D 15;
+F = foreach E generate (bigram),ROUND_TO (avgappr,2);
+store F into 's3://cse6242-dkapur7/output-big';
+ 

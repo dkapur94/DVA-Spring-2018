@@ -1,0 +1,5 @@
+I used excel to format the text.
+1. Align of text to left and numbers to write.
+2. Align heading to text.
+3. Rounding of number to two places of decimal.
+4. Replacing empty cells with 0.

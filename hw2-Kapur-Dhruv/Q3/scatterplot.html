@@ -1,0 +1,652 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <title>D3 dkapur7</title>
+        <script src="../lib/d3.v3.min.js"></script>
+        <style type = "text/css">
+        
+        .axis path,
+            .axis line {
+                fill: none;
+                stroke: black;
+                shape-rendering: crispEdges;
+            }
+            
+            .axis text {
+                font-family: sans-serif;
+                font-size: 11px;
+            }
+    </style>
+    </head>
+    <body>
+        <script type="text/javascript">
+               var w = 800;
+               var h = 600;
+               var padding = 50;
+               var dataset = [];
+               var dataset1 = [];
+               var dataset2 = [];
+               var dataset3 = [];
+               // Data load
+               d3.csv("wine_quality.csv",function(data)
+                { dataset = data
+                    
+                    dataset.forEach(function(d)
+                    {
+                        d.pH = +d.pH;
+                        d.alcohol = +d.alcohol;
+                        d.residual_sugar = +d.residual_sugar;
+                        d.quality = +d.quality;
+                        d.sulphates = +d.sulphates;
+                        dataset1.push ([d.alcohol,d.pH,d.quality]);
+                        dataset2.push ([d.residual_sugar,d.pH,d.quality]);
+                        dataset3.push ([d.pH,d.sulphates,d.quality]);
+                    })
+
+
+                
+               console.log(dataset)
+               console.log(dataset1)
+               console.log(dataset2)
+               console.log(dataset3)
+               // Scale definition
+               var xscale1 = d3.scale.linear()
+                     .domain([0,d3.max(dataset,function(d) 
+                     { return d.alcohol})])
+                     .range([padding, w-padding*2]);
+
+               var yscale1 = d3.scale.linear()
+                     .domain([0, d3.max(dataset,function(d)
+                        { return d.pH})])
+                     .range([h-padding, padding]);
+
+                var xscale2 = d3.scale.linear()
+                     .domain([0,d3.max(dataset,function(d) 
+                     { return d.residual_sugar})])
+                     .range([padding, w-padding*2]);
+
+               var yscale2= d3.scale.linear()
+                     .domain([0, d3.max(dataset,function(d)
+                        { return d.pH})])
+                     .range([h-padding, padding]);  
+                var xscale3 = d3.scale.linear()
+                     .domain([0,d3.max(dataset,function(d) 
+                     { return d.pH})])
+                     .range([padding, w-padding*2]);
+
+                var yscale3= d3.scale.log()
+                     .base(Math.E)
+                     .domain([1, d3.max(dataset,function(d){ return d.sulphates})])
+                     .clamp(true)
+                     .range([h-padding, padding]);  
+                var yscale4 = d3.scale.sqrt()
+                            .domain([0, d3.max(dataset,function(d){ return d.sulphates})])
+                            .range([h-padding, padding]);         
+
+                 
+                 //SVG declaration
+                var svg1 = d3.select("body")
+                             .append("svg")
+                             .attr("width", w)   
+                             .attr("height", h);
+                var svg2 = d3.select("body")
+                             .append("svg")
+                             .attr("y",h)
+                             .attr("x",0)
+                             .attr("width", w)   
+                             .attr("height", h);
+                 var svg3 = d3.select("body")
+                             .append("svg")
+                             .attr("y",2*h)
+                             .attr("x",0)
+                             .attr("width", w)   
+                             .attr("height", h);
+                 var svg4 = d3.select("body")
+                             .append("svg")
+                             .attr("y",(3*h))
+                             .attr("x",0)
+                             .attr("width", w)   
+                             .attr("height", h);
+                 var svg5 = d3.select("body")
+                             .append("svg")
+                             .attr("y",4*h)
+                             .attr("x",0)
+                             .attr("width", w)   
+                             .attr("height", h);
+                         
+             
+
+
+
+        
+                    // SVG for Plot 1
+
+                    svg1.selectAll("path")
+                     .data(dataset1)
+                     .enter()
+                     .append("path")
+                     .attr('d',function(d) { 
+                        //console.log(d[2])
+                        if (d[2] >=6.0)
+                        {
+                        st = d3.svg.symbol().type('cross');}
+                        else { st = d3.svg.symbol().type('circle');}
+                        return st(d);})
+                     .attr('fill',"none")
+                     .attr('transform',function(d){ //console.log(d[0])
+                        //console.log(xscale(d[1]))
+                        return "translate("+xscale1(d[0])+","+yscale1(d[1])+")" ; })
+
+                     .attr("stroke",function(d) {
+                           if (d[2]>=6.0)
+                           {
+                           return "blue";}
+                           else {
+                            return"red";
+                           }
+                       });
+                   
+                   // SVG for Plot 2
+
+                   svg2.selectAll("path")
+                     .data(dataset2)
+                     .enter()
+                     .append("path")
+                     .attr('d',function(d) { 
+                        //console.log(d[2])
+                        if (d[2] >=6.0)
+                        {
+                        st = d3.svg.symbol().type('cross');}
+                        else { st = d3.svg.symbol().type('circle');}
+                        return st(d);})
+                     .attr('fill',"none")
+                     .attr('transform',function(d){ //console.log(d[0])
+                        console.log(yscale2(d[1]))
+                        return "translate("+xscale2(d[0])+","+yscale2(d[1])+")" ; })
+
+                     .attr("stroke",function(d) {
+                           if (d[2]>=6.0)
+                           {
+                           return "blue";}
+                           else {
+                            return"red";
+                           }
+                       });
+
+                  // SVG for Plot 3
+                   svg3.selectAll("path")
+                     .data(dataset1)
+                     .enter()
+                     .append("path")
+                     .attr('d',function(d) { 
+                        //console.log(d[2])
+                        if (d[2] >=6.0)
+                        {
+                        st = d3.svg.symbol().type('cross')
+                                            .size(function(d){ return (600/(d[0]*d[1]))});  }//scaling the inverse product
+                        else { st = d3.svg.symbol().type('circle')
+                                                   .size(function(d){ return (600/(d[0]*d[1]))});} //scaling the inverse product
+                        return st(d);
+                          })
+                        
+                     .attr('fill',"none")
+                     .attr('transform',function(d){ //console.log(d[0])
+                        //console.log(yscale3(d[1]))
+                        return "translate("+xscale1(d[0])+","+yscale1(d[1])+")" ; })
+
+                     .attr("stroke",function(d) {
+                           if (d[2]>=6.0)
+                           {
+                           return "blue";}
+                           else {
+                            return"red";
+                           }
+                       });  
+                      
+                      // SVG for Square scale
+                     svg4.selectAll("path")
+                     .data(dataset3)
+                     .enter()
+                     .append("path")
+                     .attr('d',function(d) { 
+                        //console.log(d[2])
+                        if (d[2] >=6.0)
+                        {
+                        st = d3.svg.symbol().type('cross');}
+                        else { st = d3.svg.symbol().type('circle');}
+                        return st(d);})
+                     .attr('fill',"none")
+                     .attr('transform',function(d){ //console.log(d[0])
+                        console.log(yscale4(d[1]))
+                        return "translate("+xscale3(d[0])+","+yscale4(d[1])+")" ; })
+
+                     .attr("stroke",function(d) {
+                           if (d[2]>=6.0)
+                           {
+                           return "blue";}
+                           else {
+                            return"red";
+                           }
+                       });
+
+                     // SVG for Log scale
+                     svg5.selectAll("path")
+                     .data(dataset3)
+                     .enter()
+                     .append("path")
+                     .attr('d',function(d) { 
+                        //console.log(d[2])
+                        if (d[2] >=6.0)
+                        {
+                        st = d3.svg.symbol().type('cross');}
+                        else { st = d3.svg.symbol().type('circle');}
+                        return st(d);})
+                     .attr('fill',"none")
+                     .attr('transform',function(d){ //console.log(d[0])
+                        console.log(yscale3(d[1]))
+                        return "translate("+xscale3(d[0])+","+yscale3(d[1])+")" ; })
+
+                     .attr("stroke",function(d) {
+                           if (d[2]>=6.0)
+                           {
+                           return "blue";}
+                           else {
+                            return"red";
+                           }
+                       });
+                  //Axis definition    
+                 var xaxis1 = d3.svg.axis()
+                              .scale(xscale1)
+                              .orient("bottom")
+                              .ticks(10);
+                                           
+
+
+            
+                 var yaxis1 = d3.svg.axis()
+                              .scale(yscale1)
+                              .orient("left")
+                              .ticks(10);
+                              
+                            
+                                              
+                 var xaxis2 = d3.svg.axis()
+                              .scale(xscale2)
+                              .orient("bottom")
+                              .ticks(10);
+
+            
+                 var yaxis2 = d3.svg.axis()
+                              .scale(yscale2)
+                              .orient("left")
+                              .ticks(10);
+
+                 var xaxis3 = d3.svg.axis()
+                              .scale(xscale3)
+                              .orient("bottom")
+                              .ticks(10);
+
+            
+                 var yaxis3 = d3.svg.axis()
+                              .scale(yscale3)
+                              .orient("left")
+                              .ticks(10);     
+                  var yaxis4 = d3.svg.axis()
+                              .scale(yscale4)
+                              .orient("left")
+                              .ticks(10);                      
+                              
+                  
+                  var legenddata = [["Good", "blue", "cross"], ["Bad", "red", "circle"]]
+                  //Create x axis                                        
+                svg1.append("g")
+                .attr("class", "axis")
+                .attr("transform", "translate(0," + (h - padding) + ")")
+                .call(xaxis1)
+                .append("text")
+                  .attr("x",w/2)
+                  .attr("y", 35)
+                  .style("text-anchor","middle")
+                  .text("Alcohol")
+                  .style("font-size","14px")
+                  .style("font-weight","bold");
+                
+                // Create y axis
+                 svg1.append("g")
+                 .attr("class", "axis")
+                 .attr("transform", "translate(" + padding + ",0)")
+                 .call(yaxis1)
+                 .append("text")
+                  
+                  .style("text-anchor","middle")
+                  .text("pH")
+                  .attr("transform" , "translate(-30,300)rotate(270)")
+                  .style("font-size","14px")
+                  .style("font-weight","bold") ;
+
+                  svg1.append("text")
+                    .attr("x", (w / 2))             
+                    .attr("y", padding)
+                    .attr("text-anchor", "middle")  
+                    .style("font-size", "18px") 
+                    .style("text-decoration", "underline")  
+                    .text("pH vs Alcohol");
+
+                     var legend = svg1.append('g')
+                                     .attr("class", "legend")
+                                     .attr("height", 0)
+                                     .attr("width", 0)
+                                     .attr('transform', 'translate(750,100)');
+
+                     var ldata = legend.selectAll('g')
+                                            .data(legenddata);
+
+                     var lsymbol = ldata.enter()
+                                                .append("g")
+                                                .attr("transform", function(d,i){
+                                        return 'translate(0, ' + (i * 20) + ')';
+                                       });
+    
+                             lsymbol
+                                     .append('path')
+                                     .attr("d", d3.svg.symbol().type((d) => { return d[2] })) 
+                                     .style("stroke", function (d) {
+                                      return d[1];
+                                         })
+                                 .attr("fill","none");
+
+                                  lsymbol
+                                         .append("text")
+                                         .attr("x", 10)
+                                         .attr("y", 5)
+                                         .text(function (d) {
+                                           return d[0];
+                                            });
+
+                 
+                    //Create x axis  
+                 svg2.append("g")
+                 .attr("class", "axis")
+                 .attr("transform", "translate(0," + (h -padding) + ")")
+                 .call(xaxis2)
+                 .append("text")
+                  .attr("x",w/2)
+                  .attr("y", 35)
+                  .style("text-anchor","middle")
+                  .text("Residual_sugar")
+                  .style("font-size","14px")
+                  .style("font-weight","bold");
+
+
+                  svg2.append("text")
+                    .attr("x", (w / 2))             
+                    .attr("y", padding)
+                    .attr("text-anchor", "middle")  
+                    .style("font-size", "18px") 
+                    .style("text-decoration", "underline")  
+                    .text("pH vs Residual_sugar");
+            
+            
+                 // Create y axis
+                 svg2.append("g")
+                 .attr("class", "axis")
+                 .attr("transform", "translate(" + padding + ",0)")
+                 .call(yaxis2)
+                 .append("text")
+                  
+                  .style("text-anchor","middle")
+                  .text("pH")
+                  .style("font-size","14px")
+                  .attr("transform" , "translate(-30,300)rotate(270)")
+                  .style("font-weight","bold") ;
+
+
+                  var legend = svg2.append('g')
+                                     .attr("class", "legend")
+                                     .attr("height", 0)
+                                     .attr("width", 0)
+                                     .attr('transform', 'translate(750,100)');
+
+                     var ldata = legend.selectAll('g')
+                                            .data(legenddata);
+
+                     var lsymbol = ldata.enter()
+                                                .append("g")
+                                                .attr("transform", function(d,i){
+                                        return 'translate(0, ' + (i * 20) + ')';
+                                       });
+    
+                             lsymbol
+                                     .append('path')
+                                     .attr("d", d3.svg.symbol().type((d) => { return d[2] })) 
+                                     .style("stroke", function (d) {
+                                      return d[1];
+                                         })
+                                 .attr("fill","none");
+
+                                  lsymbol
+                                         .append("text")
+                                         .attr("x", 10)
+                                         .attr("y", 5)
+                                         .text(function (d) {
+                                           return d[0];
+                                            });
+                 
+                  //Create x axis  
+                 svg3.append("g")
+                .attr("class", "axis")
+                .attr("transform", "translate(0," + (h - padding) + ")")
+                .call(xaxis1)
+                .append("text")
+                  .attr("x",w/2)
+                  .attr("y", 35)
+                  .style("text-anchor","middle")
+                  .text("Alcohol")
+                  .style("font-size","14px")
+                  .style("font-weight","bold");
+                
+
+                 // Create y axis
+                 svg3.append("g")
+                 .attr("class", "axis")
+                 .attr("transform", "translate(" + padding + ",0)")
+                 .call(yaxis1)
+                 .append("text")
+                
+                  .style("text-anchor","middle")
+                  .text("pH")
+                  .attr("transform" , "translate(-30,300)rotate(270)")
+                  .style("font-size","14px")
+                  .style("font-weight","bold") ;
+
+
+                  svg3.append("text")
+                    .attr("x", (w / 2))             
+                    .attr("y", 2*padding-40)
+                    .attr("text-anchor", "middle")  
+                    .style("font-size", "18px") 
+                    .style("text-decoration", "underline")  
+                    .text("pH vs Alcohol(scaled symbols)");
+
+
+
+                    var legend = svg3.append('g')
+                                     .attr("class", "legend")
+                                     .attr("height", 0)
+                                     .attr("width", 0)
+                                     .attr('transform', 'translate(750,100)');
+
+                     var ldata = legend.selectAll('g')
+                                            .data(legenddata);
+
+                     var lsymbol = ldata.enter()
+                                                .append("g")
+                                                .attr("transform", function(d,i){
+                                        return 'translate(0, ' + (i * 20) + ')';
+                                       });
+    
+                             lsymbol
+                                     .append('path')
+                                     .attr("d", d3.svg.symbol().type((d) => { return d[2] })) 
+                                     .style("stroke", function (d) {
+                                      return d[1];
+                                         })
+                                 .attr("fill","none");
+
+                                  lsymbol
+                                         .append("text")
+                                         .attr("x", 10)
+                                         .attr("y", 5)
+                                         .text(function (d) {
+                                           return d[0];
+                                            });
+            
+            
+                
+                 //Create x axis  
+                 svg4.append("g")
+                .attr("class", "axis")
+                .attr("transform", "translate(0," + (h - padding) + ")")
+                .call(xaxis3)
+                .append("text")
+                  .attr("x",w/2)
+                  .attr("y", 35)
+                  .style("text-anchor","middle")
+                  .text("pH")
+                  .style("font-size","14px")
+                  .style("font-weight","bold");
+                
+
+                 // Create y axis
+                 svg4.append("g")
+                 .attr("class", "axis")
+                 .attr("transform", "translate(" + padding + ",0)")
+                 .call(yaxis4)
+                 .append("text")
+                  //.attr("x",-25)
+                  //.attr("y", (w/2)-2*padding)
+                  .style("text-anchor","middle")
+                  .text("Sulphates (sqrt scale)")
+                  .attr("transform" , "translate(-35,300)rotate(270)")
+                  .style("font-size","14px")
+                  .style("font-weight","bold") ;
+
+                   svg4.append("text")
+                    .attr("x", (w / 2))             
+                    .attr("y", padding-10)
+                    .attr("text-anchor", "middle")  
+                    .style("font-size", "18px") 
+                    .style("text-decoration", "underline")  
+                    .text("Sulphates vs pH(square-root-scale)");
+
+
+                    var legend = svg4.append('g')
+                                     .attr("class", "legend")
+                                     .attr("height", 0)
+                                     .attr("width", 0)
+                                     .attr('transform', 'translate(750,100)');
+
+                     var ldata = legend.selectAll('g')
+                                            .data(legenddata);
+
+                     var lsymbol = ldata.enter()
+                                                .append("g")
+                                                .attr("transform", function(d,i){
+                                        return 'translate(0, ' + (i * 20) + ')';
+                                       });
+    
+                             lsymbol
+                                     .append('path')
+                                     .attr("d", d3.svg.symbol().type((d) => { return d[2] })) 
+                                     .style("stroke", function (d) {
+                                      return d[1];
+                                         })
+                                 .attr("fill","none");
+
+                                  lsymbol
+                                         .append("text")
+                                         .attr("x", 10)
+                                         .attr("y", 5)
+                                         .text(function (d) {
+                                           return d[0];
+                                            });
+
+                   //Create x axis  
+                 svg5.append("g")
+                .attr("class", "axis")
+                .attr("transform", "translate(0," + (h - padding) + ")")
+                .call(xaxis3)
+                .append("text")
+                  .attr("x",w/2)
+                  .attr("y", 35)
+                  .style("text-anchor","middle")
+                  .text("pH")
+                  .style("font-size","14px")
+                  .style("font-weight","bold");
+
+
+                 svg5.append("text")
+                    .attr("x", (w / 2))             
+                    .attr("y", padding-10)
+                    .attr("text-anchor", "middle")  
+                    .style("font-size", "18px") 
+                    .style("text-decoration", "underline")  
+                    .text("Sulphates vs pH(log-scaled)");
+
+                 // Create y axis
+                 svg5.append("g")
+                 .attr("class", "axis")
+                 .attr("transform", "translate(" + padding + ",0)")
+                 .call(yaxis3)
+                 .append("text")
+                  //.attr("x",-25)
+                  //.attr("y", (w/2)-2*padding)
+                  .style("text-anchor","middle")
+                  .text("Sulphates (log scale)")
+                  .attr("transform" , "translate(-35,300)rotate(270)")
+                  .style("font-size","14px")
+                  .style("font-weight","bold") ;
+
+
+                  var legend = svg5.append('g')
+                                     .attr("class", "legend")
+                                     .attr("height", 0)
+                                     .attr("width", 0)
+                                     .attr('transform', 'translate(750,100)');
+
+                     var ldata = legend.selectAll('g')
+                                            .data(legenddata);
+
+                     var lsymbol = ldata.enter()
+                                                .append("g")
+                                                .attr("transform", function(d,i){
+                                        return 'translate(0, ' + (i * 20) + ')';
+                                       });
+    
+                             lsymbol
+                                     .append('path')
+                                     .attr("d", d3.svg.symbol().type((d) => { return d[2] })) 
+                                     .style("stroke", function (d) {
+                                      return d[1];
+                                         })
+                                 .attr("fill","none");
+
+                                  lsymbol
+                                         .append("text")
+                                         .attr("x", 10)
+                                         .attr("y", 5)
+                                         .text(function (d) {
+                                           return d[0];
+                                            });
+         
+           
+            });
+
+
+
+        
+
+        </script>
+    </body>
+</html>

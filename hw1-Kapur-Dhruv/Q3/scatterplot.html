@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <title>D3 dkapur7</title>
+        <script type="text/javascript" src="d3/d3.v3.min.js"></script>
+        <style type = "text/css">
+        
+        .axis path,
+            .axis line {
+                fill: none;
+                stroke: black;
+                shape-rendering: crispEdges;
+            }
+            
+            .axis text {
+                font-family: sans-serif;
+                font-size: 11px;
+            }
+    </style>
+    </head>
+    <body>
+    <script type="text/javascript">
+        var w = 800;
+        var h = 600;
+        var padding = 50;
+        var data[];
+
+        d3.csv("/users/dhruvkapur/Desktop/DVA/hw2-skeleton/Q3/wine_quality.csv",function(data)
+        {
+            console.log(data[0]);
+        });
+    </script>
+    </body>
+    </html>

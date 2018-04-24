@@ -1,0 +1,6 @@
+Two data frames were created with the following mapping.
+1. For Outgoing weights, was filtered and grouped by src and avg was calculated.
+2. For Incoming Weights,was filtered and grouped by tgt and avg was calculated.
+
+The two data frames were finally joined and the difference of the averages is calculated.
+The joined data frame is the written to a file stored in HDFS using saveAsTextFile. 

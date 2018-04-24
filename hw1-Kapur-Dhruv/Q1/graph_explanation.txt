@@ -1,0 +1,4 @@
+1. Force Atlas layout used to ensure that the nodes were separated and labels had minimal overlapping. 
+2. Only labels of PoloChaus immediate neighbors(friends) made visible using data laboratory
+
+

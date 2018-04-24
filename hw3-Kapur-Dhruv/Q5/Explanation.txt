@@ -1,0 +1,1 @@
+I used Bayesian Linear Regression for part C. Bayesian model uses poster probability distributions of the model.Linear Regression assumes conditional distribution of the model. That is why the variation in the errors in the two cases is small.

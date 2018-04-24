@@ -1,0 +1,7 @@
+C.i.a. No. of rows that return true - 47
+C.i.b. Columns created before deletion of columns -5
+       Number of Columns deleted-2
+C.ii.  Number of clusters found - 569
+C.iii. if(isBlank(value),"unbranded",value))
+C.iv.  if(cells["price"].value > 100, "1","0")
+C.v.   if(or(contains(value ,"discount"),contains(value,"offer"),contains(value,"sale")),"1","0")

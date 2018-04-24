@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <title>D3 dkapur7</title>
+        <script type="text/javascript" src="d3/d3.v3.min.js"></script>
+        <style type = "text/css">
+        
+        .axis path,
+            .axis line {
+                fill: none;
+                stroke: black;
+                shape-rendering: crispEdges;
+            }
+            
+            .axis text {
+                font-family: sans-serif;
+                font-size: 11px;
+            }
+    </style>
+    </head>
+    <body>
+        <script type="text/javascript">
+
+
+          var dataset1 = [];
+
+            xrange = 100;
+            yrange = 100;
+
+            for (var i = 0;i<25; i++)
+            {
+                var newnumber1 = Math.round(Math.random()*xrange);
+                var newnumber2 = Math.round(Math.random()*yrange);
+                dataset1.push([newnumber1,newnumber2])
+                }
+                console.log(dataset1);
+
+          var dataset2 = [];
+
+            xrange = 100;
+            yrange = 100;
+
+            for (var j = 0;j<25; j++)
+            {
+                var newnumber3 = Math.round(Math.random()*xrange);
+                var newnumber4 = Math.round(Math.random()*yrange);
+                dataset2.push([newnumber3,newnumber4])
+                }
+                console.log(dataset2);
+
+          var dataset = dataset1.concat(dataset2);      
+
+            var w = 500;
+            var h = 500;
+            padding =50;
+
+            var scale = d3.scale.linear()
+                                .domain([50,500])
+                                .range([5,50]);
+
+            var xscale = d3.scale.linear()
+                     .domain([0, 100])
+                     .range([padding, w-padding*2]);
+
+
+
+                
+
+            var yscale = d3.scale.linear()
+                     .domain([0, 100])
+                     .range([padding, h-padding]);
+
+            var avg1 = d3.mean(dataset1, function(d) {
+                return scale(d[0]); })
+            var avg2 = d3.mean(dataset2, function(d) {
+                return scale(d[0]); })
+            var avgsize = (avg1+avg2)/2;
+
+
+
+            var svg = d3.select("body")
+            .append("svg")
+            .attr("width", w)   
+            .attr("height", h);
+              
+            var tri = d3.svg.symbol().type('triangle-up')
+                    .size(function(d){ return scale(d[0]); });
+            var cir = d3.svg.symbol().type('circle')
+                    .size(function(d) {return scale(d[0]);});        
+
+            svg.selectAll("path")
+                     .data(dataset1)
+                     .enter()
+                     .append("path")
+                     .attr('d',tri)
+                     //.attr('d',cir)
+                     .attr('fill',"white")
+                     .attr('transform',function(d){ return "translate("+xscale(d[0])+","+yscale(d[1])+")"; })
+                     .attr("stroke",function(d) {
+                        if (scale(d[0]) > avgsize) {
+                         return "blue";
+                }
+                else {
+                   return "green";
+                }
+               });
+                    
+            svg.selectAll("path2")
+                     .data(dataset2)
+                     .enter()
+                     .append("path")
+                     //.attr('d',tri)
+                     .attr('d',cir)
+                     .attr('fill',"white")
+                     .attr('transform',function(d){ return "translate("+xscale(d[0])+","+yscale(d[1])+")"; })
+                     .attr("stroke",function(d) {
+                        if (scale(d[0]) > avgsize) {
+                         return "blue";
+                }
+                else {
+                   return "green";
+                }
+               });
+
+            var xaxis = d3.svg.axis()
+                              .scale(xscale)
+                              .orient("bottom")
+                              .ticks(10);
+
+            
+            var yaxis = d3.svg.axis()
+                              .scale(yscale)
+                              .orient("left")
+                              .ticks(10);
+
+
+            svg.append("g")
+                .attr("class", "axis")
+                .attr("transform", "translate(0," + (h - padding) + ")")
+                .call(xaxis);
+            
+            
+            svg.append("g")
+                .attr("class", "axis")
+                .attr("transform", "translate(" + padding + ",0)")
+                .call(yaxis);
+                    
+            svg.append("text")
+                .text("DHRUV KAPUR")   
+                .attr("x",50)
+                .attr("y",25);     
+            
+        </script>
+    </body>
+</html>   

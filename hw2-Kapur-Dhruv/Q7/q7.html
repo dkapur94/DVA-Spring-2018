@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <title>D3 dkapur7</title>
+        <script src="../lib/d3.v3.min.js"></script>
+        <script type="text/javascript" src="../lib/d3-queue.v3.min.js"></script>
+        <script type="text/javascript" src="../lib/topojson.v1.min.js"></script>
+        <script src="../lib/d3.tip.v0.6.3.js"></script>
+
+        
+        <style type = "text/css">
+        
+        .axis path,
+            .axis line {
+                fill: none;
+                stroke: black;
+                shape-rendering: crispEdges;
+            }
+            
+            .axis text {
+                font-family: sans-serif;
+                font-size: 11px;
+            }
+
+            .d3-tip {
+                   line-height: 1;
+                   font-weight: bold;
+                   padding: 12px;
+                   background: rgba(0, 0, 0, 0.8);
+                   color: #fff;
+                   border-radius: 2px;
+}
+
+    </style>
+    </head>
+    <body>
+        <script type="text/javascript">
+               var w = 1200;
+               var h = 700;
+               var padding = 50;
+               var svg = d3.select("svg")
+                           .attr("width",w)
+                           .attr("height",h);
+
+                  var dataset =[90000,1200000,5000000,11000000,30000000,60000000,90000000,1440000000];   
+                  
+                  //Scale 
+               var xscale = d3.scale.linear()
+                         .domain([1, 10])
+                         .range([600, 800]);
+                     
+                var color = d3.scale.threshold()
+                                   .domain([90000,1200000,5000000,11000000,30000000,60000000,90000000,1440000000])
+                                   .range(["#fff5eb","#fee6ce","#fdd0a2","#fdae6b","#fd8d3c","#f16913","#d94801","#8c2d04"]);   
+
+                 var tip = d3.tip()
+                        .attr('class', 'd3-tip')
+                        .offset([0, 0])   
+                        .html(function(d) { return "Country:" + d.properties.name + "<br>Population:" + d.population + "<br> Literacy rate:" +d.Rate;}) 
+                var keyword = ["Country","Population","Literacy"] ;
+
+                      
+
+                 var labels = ["90000","1200000","5000000","11000000","30000000","60000000","90000000","1440000000"]
+
+                //SVG for cholorpleth
+                var svg = d3.select("body").append("svg")
+                .attr("width", w)
+                .attr("height", h)
+                .append("g")
+                .attr("transform", "translate("+padding+", "+padding+")");  
+
+                svg.call(tip)      
+
+                  
+                var population = d3.map();
+                var literacy = d3.map();
+
+
+            d3.queue()
+                  .defer(d3.tsv, "world_population.tsv" , function(d) { population.set(d.id, +d.population);})
+                  .defer(d3.json, "world_countries.json")
+                  .defer(d3.tsv, "literacy_rate.tsv",function(d) { literacy.set(d.id, +d.Rate)})
+                  .await(done)
+                   
+                    
+                 var projection = d3.geo.equirectangular();
+                
+                 var geoGenerator = d3.geo.path()
+                                     .projection(projection) ; 
+
+                                   //  geoGenerator(world_countries.json)
+
+
+
+              function done (error,world_population,world_countries,literacy_rate){
+                   
+                    
+
+                    world_countries.features.forEach(function(d) {  return d.population = population.get(d.id)})
+                    world_countries.features.forEach(function(d) { return d.Rate = literacy.get(d.id)
+                         
+                     })
+
+                   //
+                   
+                svg.append("g")
+                   .attr("class", "countries")
+                   .selectAll("path")
+                   .data((world_countries.features))
+                   .enter().append("path")
+                   .attr("d", geoGenerator)
+                   .attr("fill", function(d) { 
+                    return color(d.population) })
+                    .on('mouseover', tip.show)
+                    .on('mouseout', tip.hide)
+
+                    svg.append("text")
+                    .attr("x", (w / 2))             
+                    .attr("y", padding-30)
+                    .attr("text-anchor", "middle")  
+                    .style("font-size", "24px")
+                    .text("Population by Country")
+                    .style("fill","orange");
+                  
+                   };
+
+                
+                     
+                  
+
+                   var legend = svg.selectAll(".legend")
+                        .data(dataset)
+                        .enter()
+                        .append("g")
+                        .attr("class", "legend");
+                    
+                    legend.append("rect")
+                    .attr("height", 20)
+                    .attr("width", 20)
+                    .style("fill", function(d,i){
+                    return color(d-1);
+                    })
+                    .attr("x", w-3*padding)
+                    .attr("y", function(d,i) {return 3*padding + (i*25) - 2*20;});
+
+                    legend.append("text")
+                    .text(function(d,i){ return labels[i];})
+                    .attr("font-size", "13px")
+                    .attr("font-family", "sans-serif")
+                    .attr("x", w-2*padding)
+                    .attr("y", function(d,i) {return (2*padding)+(i+0.75)*1.3*20;});
+
+
+
+
+
+           
+
+
+
+
+           </script>
+       </body>
+    </html>

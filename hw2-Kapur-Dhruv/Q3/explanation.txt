@@ -1,0 +1,2 @@
+1. We would want to use a log scale if the data is spread out over a large range. Using a linear scale in this case will lead to uneven spacing.
+2. We would want to use a square root scale as leads to better clustering of data.
